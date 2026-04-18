@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vinyl & Co. — Taichung</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+
+  <style>
+    /* ============================================================
+       ROOT TOKENS
+    ============================================================ */
+    :root {
+      --nav-height: 70px;
+      --vinyl-black:  #141010;
+      --groove:       #1e1916;
+      --groove-mid:   #2a2320;
+      --gold:         #c5a059;
+      --gold-light:   #d9b878;
+      --gold-dim:     rgba(197,160,89,0.18);
+      --cream:        #f4efe5;
+      --cream-mid:    #ede6d8;
+      --ink:          #1a1614;
+      --muted:        #7a736a;
+      --serif:        'Playfair Display', Georgia, serif;
+      --sans:         'DM Sans', system-ui, sans-serif;
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out:  cubic-bezier(0.45, 0, 0.55, 1);
+    }
+
+    /* ============================================================
+       RESET & BASE
+    ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 24px;
+    }
+
+    body {
+      font-family: var(--sans);
+      background: var(--cream);
+      color: var(--ink);
+      overflow-x: hidden;
+      cursor: none; /* custom cursor */
+    }
+
+    img { display: block; max-width: 100%; }
+    a { text-decoration: none; }
+
+    /* ============================================================
+       CUSTOM CURSOR
+    ============================================================ */
+    #cursor {
+      position: fixed;
+      width: 10px; height: 10px;
+      background: var(--gold);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: width 0.25s var(--ease-out-expo),
+                  height 0.25s var(--ease-out-expo),
+                  background 0.2s;
+      mix-blend-mode: difference;
+    }
+
+    #cursor-ring {
+      position: fixed;
+      width: 36px; height: 36px;
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.08s linear,
+                  width 0.3s var(--ease-out-expo),
+                  height 0.3s var(--ease-out-expo),
+                  opacity 0.3s;
+      opacity: 0.55;
+    }
+
+    body.cursor-hover #cursor        { width: 6px; height: 6px; }
+    body.cursor-hover #cursor-ring   { width: 56px; height: 56px; opacity: 0.9; }
+
+    @media (hover: none) {
+      #cursor, #cursor-ring { display: none; }
+      body { cursor: auto; }
+    }
+
+    /* ============================================================
+       NAVBAR
+    ============================================================ */
+    #main-nav {
+      height: var(--nav-height);
+      background: rgba(20, 16, 16, 0.0) !important;
+      backdrop-filter: blur(0px);
+      -webkit-backdrop-filter: blur(0px);
+      border-bottom: 1px solid transparent;
+      transition: background 0.5s ease,
+                  backdrop-filter 0.5s ease,
+                  border-color 0.5s ease;
+      z-index: 1000;
+    }
+
+    #main-nav.scrolled {
+      background: rgba(20, 16, 14, 0.93) !important;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom-color: var(--gold-dim);
+    }
+
+    .navbar-brand {
+      font-family: var(--serif);
+      font-size: 1.25rem;
+      letter-spacing: 5px;
+      color: var(--gold) !important;
+      font-weight: 700;
+    }
+
+    .navbar-brand span {
+      color: rgba(197,160,89,0.45);
+      font-weight: 400;
+    }
+
+    .nav-link {
+      font-size: 0.68rem !important;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.65) !important;
+      padding: 0.4rem 1.1rem !important;
+      position: relative;
+      transition: color 0.25s;
+      font-weight: 500;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -1px; left: 1.1rem; right: 1.1rem;
+      height: 1px;
+      background: var(--gold);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.35s var(--ease-out-expo);
+    }
+
+    .nav-link:hover { color: var(--gold) !important; }
+    .nav-link:hover::after,
+    .nav-link.active::after { transform: scaleX(1); }
+
+    .navbar-toggler {
+      border: 1px solid var(--gold-dim) !important;
+      padding: 0.3rem 0.5rem;
+    }
+
+    .navbar-toggler-icon {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(197,160,89,0.8)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+    }
+
+    /* ============================================================
+       HERO CAROUSEL
+    ============================================================ */
+    #home {
+      position: relative;
+    }
+
+    .carousel-item {
+      height: 100vh;
+      min-height: 600px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Ken Burns */
+    .slide-bg {
+      position: absolute;
+      inset: -6%;
+      background-size: cover;
+      background-position: center;
+      will-change: transform;
+      transition: transform 8s ease;
+    }
+
+    .carousel-item.active .slide-bg {
+      animation: kenBurns 12s ease forwards;
+    }
+
+    @keyframes kenBurns {
+      from { transform: scale(1.08); }
+      to   { transform: scale(1.0); }
+    }
+
+    /* Gradient overlay — heavier bottom for caption readability */
+    .slide-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(12,8,6,0.20) 0%,
+        rgba(12,8,6,0.15) 35%,
+        rgba(12,8,6,0.65) 80%,
+        rgba(8,5,4,0.90) 100%
+      );
+    }
+
+    /* Vertical grain texture overlay */
+    .slide-grain {
+      position: absolute;
+      inset: 0;
+      opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 256px;
+      pointer-events: none;
+    }
+
+    .carousel-caption {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 0 0 6vh;
+      text-align: left;
+    }
+
+    /* Slide text animation state */
+    .slide-eyebrow,
+    .slide-title,
+    .slide-sub,
+    .slide-zh,
+    .slide-cta {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 0.8s var(--ease-out-expo),
+                  transform 0.8s var(--ease-out-expo);
+    }
+
+    .carousel-item.active .slide-eyebrow { opacity: 1; transform: none; transition-delay: 0.15s; }
+    .carousel-item.active .slide-title   { opacity: 1; transform: none; transition-delay: 0.30s; }
+    .carousel-item.active .slide-sub     { opacity: 1; transform: none; transition-delay: 0.45s; }
+    .carousel-item.active .slide-zh      { opacity: 1; transform: none; transition-delay: 0.55s; }
+    .carousel-item.active .slide-cta     { opacity: 1; transform: none; transition-delay: 0.70s; }
+
+    .slide-eyebrow {
+      font-size: 0.65rem;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 500;
+      margin-bottom: 0.7rem;
+    }
+
+    .slide-title {
+      font-family: var(--serif);
+      font-size: clamp(3.4rem, 9vw, 8rem);
+      font-weight: 900;
+      line-height: 0.92;
+      color: #fff;
+      letter-spacing: -1px;
+      margin-bottom: 1.2rem;
+    }
+
+    .slide-sub {
+      font-size: clamp(0.9rem, 1.4vw, 1.05rem);
+      color: rgba(255,255,255,0.75);
+      font-weight: 300;
+      letter-spacing: 0.3px;
+      margin-bottom: 0.25rem;
+    }
+
+    .slide-zh {
+      font-size: 0.82rem;
+      color: rgba(197,160,89,0.75);
+      letter-spacing: 1.5px;
+      margin-bottom: 2rem;
+    }
+
+    .slide-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.75rem 2rem;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      font-size: 0.68rem;
+      letter-spacing: 3.5px;
+      text-transform: uppercase;
+      font-weight: 500;
+      transition: background 0.3s, color 0.3s, gap 0.3s;
+    }
+
+    .slide-cta::after {
+      content: '→';
+      font-size: 0.9rem;
+      transition: transform 0.3s var(--ease-out-expo);
+    }
+
+    .slide-cta:hover {
+      background: var(--gold);
+      color: var(--ink);
+      gap: 1rem;
+    }
+
+    .slide-cta:hover::after { transform: translateX(4px); }
+
+    /* Scroll indicator */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2.5rem;
+      right: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      animation: fadeIn 1s 1.8s forwards;
+    }
+
+    .scroll-indicator span {
+      font-size: 0.6rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      writing-mode: vertical-rl;
+    }
+
+    .scroll-indicator::after {
+      content: '';
+      width: 1px;
+      height: 50px;
+      background: linear-gradient(to bottom, rgba(197,160,89,0.6), transparent);
+      animation: scrollLine 2s 2s ease infinite;
+    }
+
+    @keyframes scrollLine {
+      0%   { transform: scaleY(0); transform-origin: top; opacity: 1; }
+      50%  { transform: scaleY(1); transform-origin: top; }
+      51%  { transform: scaleY(1); transform-origin: bottom; }
+      100% { transform: scaleY(0); transform-origin: bottom; opacity: 0.3; }
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    /* Carousel indicators */
+    .carousel-indicators {
+      bottom: 2.4rem;
+      left: auto;
+      right: auto;
+      margin: 0;
+      justify-content: flex-start;
+      padding-left: calc((100% - 1320px) / 2 + 12px);
+      gap: 6px;
+    }
+
+    @media (max-width: 1400px) {
+      .carousel-indicators { padding-left: calc((100% - min(100%, 1140px)) / 2 + 12px); }
+    }
+
+    @media (max-width: 768px) {
+      .carousel-indicators { padding-left: 1rem; }
+    }
+
+    .carousel-indicators [data-bs-target] {
+      width: 24px; height: 1px;
+      border: none;
+      background: rgba(255,255,255,0.3);
+      border-radius: 0;
+      transition: width 0.4s var(--ease-out-expo), background 0.3s;
+      margin: 0;
+    }
+
+    .carousel-indicators .active {
+      width: 48px;
+      background: var(--gold);
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next { display: none; }
+
+    /* Slide counter */
+    .slide-counter {
+      position: absolute;
+      top: 50%;
+      right: 2.5rem;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      z-index: 10;
+    }
+
+    .slide-counter span {
+      font-family: var(--serif);
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.35);
+      writing-mode: vertical-rl;
+      letter-spacing: 1px;
+    }
+
+    .slide-counter .current {
+      color: var(--gold);
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    /* ============================================================
+       SECTION SHARED
+    ============================================================ */
+    section {
+      scroll-margin-top: var(--nav-height);
+    }
+
+    .section-eyebrow {
+      font-size: 0.65rem;
+      letter-spacing: 4.5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 500;
+      margin-bottom: 0.6rem;
+    }
+
+    .section-title {
+      font-family: var(--serif);
+      font-size: clamp(1.9rem, 3.5vw, 2.8rem);
+      font-weight: 700;
+      line-height: 1.1;
+      color: var(--ink);
+      margin-bottom: 0.8rem;
+    }
+
+    .section-title.light { color: #fff; }
+
+    .gold-rule {
+      width: 44px; height: 1.5px;
+      background: var(--gold);
+      margin-bottom: 1.4rem;
+    }
+
+    /* ============================================================
+       COLLECTION SECTIONS
+    ============================================================ */
+    .collection-section { padding: 110px 0; }
+    .collection-section.alt { background: var(--cream-mid); }
+    .collection-section.dark {
+      background: var(--groove);
+    }
+
+    .collection-intro p {
+      font-size: 0.9rem;
+      line-height: 1.9;
+      color: var(--muted);
+      max-width: 460px;
+    }
+
+    .collection-intro.light p { color: rgba(255,255,255,0.5); }
+
+    /* ── Record Card ── */
+    .record-card {
+      position: relative;
+      background: #fff;
+      overflow: hidden;
+      transition: transform 0.5s var(--ease-out-expo),
+                  box-shadow 0.5s var(--ease-out-expo);
+    }
+
+    .record-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 30px 60px rgba(0,0,0,0.13), 0 8px 16px rgba(0,0,0,0.07);
+    }
+
+    .collection-section.dark .record-card {
+      background: var(--groove-mid);
+    }
+
+    .record-img-wrap {
+      overflow: hidden;
+      aspect-ratio: 1;
+      position: relative;
+    }
+
+    .record-img-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.7s var(--ease-out-expo),
+                  filter 0.5s;
+      filter: saturate(0.8) brightness(0.95);
+    }
+
+    .record-card:hover .record-img-wrap img {
+      transform: scale(1.07);
+      filter: saturate(1.05) brightness(1);
+    }
+
+    /* Vinyl overlay on hover */
+    .record-img-wrap::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center,
+        transparent 28%,
+        rgba(20,16,14,0.55) 60%,
+        rgba(10,8,6,0.85) 100%);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+
+    .record-card:hover .record-img-wrap::after { opacity: 1; }
+
+    /* Vinyl disc icon on hover */
+    .record-disc-icon {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) scale(0.5);
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: var(--vinyl-black);
+      border: 1px solid rgba(197,160,89,0.3);
+      z-index: 2;
+      opacity: 0;
+      transition: opacity 0.4s, transform 0.4s var(--ease-out-expo);
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .record-disc-icon::before {
+      content: '';
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: var(--gold);
+      opacity: 0.7;
+    }
+
+    .record-card:hover .record-disc-icon {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1) rotate(15deg);
+    }
+
+    .record-badge {
+      position: absolute;
+      top: 14px; left: 14px;
+      background: var(--vinyl-black);
+      color: var(--gold);
+      font-size: 0.58rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      font-weight: 500;
+      z-index: 3;
+    }
+
+    .record-body {
+      padding: 1.1rem 1.2rem 1.25rem;
+      border-top: 1.5px solid var(--gold);
+    }
+
+    .collection-section.dark .record-body {
+      border-top-color: rgba(197,160,89,0.35);
+    }
+
+    .record-meta {
+      font-size: 0.62rem;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.3rem;
+      font-weight: 500;
+    }
+
+    .record-title {
+      font-family: var(--serif);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 0.1rem;
+      line-height: 1.3;
+    }
+
+    .collection-section.dark .record-title { color: #e8e0d0; }
+
+    .record-artist {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-weight: 300;
+    }
+
+    .collection-section.dark .record-artist { color: rgba(255,255,255,0.38); }
+
+    /* ============================================================
+       JOURNEY / TIMELINE
+    ============================================================ */
+    #journey {
+      background: var(--vinyl-black);
+      padding: 120px 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Decorative vinyl grooves */
+    #journey::before,
+    #journey::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    #journey::before {
+      width: 700px; height: 700px;
+      border: 1px solid rgba(197,160,89,0.04);
+      top: -200px; right: -200px;
+    }
+
+    #journey::after {
+      width: 500px; height: 500px;
+      border: 1px solid rgba(197,160,89,0.04);
+      bottom: -150px; left: -150px;
+    }
+
+    .journey-header {
+      text-align: center;
+      margin-bottom: 5rem;
+    }
+
+    .journey-header .section-title {
+      color: #fff;
+    }
+
+    .journey-header .section-title em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    /* Timeline track */
+    .timeline-track {
+      position: relative;
+    }
+
+    .timeline-track::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0; bottom: 0;
+      width: 1px;
+      background: linear-gradient(
+        to bottom,
+        transparent,
+        rgba(197,160,89,0.25) 10%,
+        rgba(197,160,89,0.25) 90%,
+        transparent
+      );
+      transform: translateX(-50%);
+    }
+
+    @media (max-width: 767px) {
+      .timeline-track::before { left: 24px; }
+    }
+
+    .tl-item {
+      display: grid;
+      grid-template-columns: 1fr 80px 1fr;
+      align-items: center;
+      margin-bottom: 5rem;
+      position: relative;
+    }
+
+    .tl-item:last-child { margin-bottom: 0; }
+
+    .tl-item:nth-child(even) .tl-text { grid-column: 3; grid-row: 1; order: 3; text-align: left; }
+    .tl-item:nth-child(even) .tl-center { grid-column: 2; grid-row: 1; order: 2; }
+    .tl-item:nth-child(even) .tl-visual { grid-column: 1; grid-row: 1; order: 1; }
+
+    .tl-text { padding: 0 2.5rem; }
+    .tl-item:nth-child(odd) .tl-text { text-align: right; }
+
+    .tl-center {
+      display: flex;
+      justify-content: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .tl-dot {
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--vinyl-black);
+      border: 2px solid var(--gold);
+      box-shadow: 0 0 0 5px rgba(197,160,89,0.08);
+      transition: box-shadow 0.3s, transform 0.3s var(--ease-out-expo);
+    }
+
+    .tl-item:hover .tl-dot {
+      transform: scale(1.4);
+      box-shadow: 0 0 0 8px rgba(197,160,89,0.12);
+    }
+
+    .tl-visual {
+      border-radius: 2px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .tl-visual img {
+      width: 100%;
+      aspect-ratio: 16/10;
+      object-fit: cover;
+      filter: brightness(0.7) saturate(0.65);
+      transition: filter 0.5s, transform 0.6s var(--ease-out-expo);
+    }
+
+    .tl-item:hover .tl-visual img {
+      filter: brightness(0.9) saturate(1);
+      transform: scale(1.03);
+    }
+
+    .tl-num {
+      font-family: var(--serif);
+      font-size: 4.5rem;
+      font-weight: 900;
+      color: rgba(197,160,89,0.08);
+      line-height: 1;
+      margin-bottom: -0.8rem;
+    }
+
+    .tl-label {
+      font-size: 0.62rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 500;
+      margin-bottom: 0.4rem;
+    }
+
+    .tl-heading {
+      font-family: var(--serif);
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #e8e0d2;
+      line-height: 1.2;
+      margin-bottom: 0.75rem;
+    }
+
+    .tl-body {
+      font-size: 0.85rem;
+      line-height: 1.85;
+      color: rgba(255,255,255,0.42);
+      font-weight: 300;
+    }
+
+    @media (max-width: 767px) {
+      .tl-item {
+        grid-template-columns: 48px 1fr;
+        grid-template-rows: auto;
+        align-items: start;
+        gap: 0;
+      }
+
+      .tl-item .tl-center     { grid-column: 1; grid-row: 1; align-self: start; padding-top: 4px; }
+      .tl-item .tl-text,
+      .tl-item:nth-child(even) .tl-text { grid-column: 2; grid-row: 1; text-align: left !important; padding: 0 0 0 1rem; }
+      .tl-item .tl-visual,
+      .tl-item:nth-child(even) .tl-visual { display: none; }
+    }
+
+    /* ============================================================
+       ABOUT / STATS
+    ============================================================ */
+    #about {
+      background: var(--groove);
+      padding: 110px 0;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+
+    @media (max-width: 991px) {
+      .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+    }
+
+    .about-text p {
+      font-size: 0.92rem;
+      line-height: 2;
+      color: rgba(255,255,255,0.48);
+      font-weight: 300;
+    }
+
+    .about-quote {
+      font-family: var(--serif);
+      font-size: clamp(1.1rem, 2vw, 1.35rem);
+      font-style: italic;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.65;
+      border-left: 2px solid var(--gold);
+      padding-left: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: rgba(197,160,89,0.1);
+    }
+
+    .stat-cell {
+      background: var(--groove);
+      padding: 2.2rem 2rem;
+      transition: background 0.3s;
+    }
+
+    .stat-cell:hover { background: rgba(197,160,89,0.05); }
+
+    .stat-num {
+      font-family: var(--serif);
+      font-size: 2.8rem;
+      font-weight: 900;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+
+    .stat-label {
+      font-size: 0.68rem;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      font-weight: 500;
+    }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    footer {
+      background: #0c0908;
+      border-top: 1px solid rgba(197,160,89,0.1);
+      padding: 4rem 0 2.5rem;
+    }
+
+    .footer-brand {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      letter-spacing: 5px;
+      color: var(--gold);
+      margin-bottom: 0.6rem;
+      font-weight: 700;
+    }
+
+    .footer-tagline {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.28);
+      letter-spacing: 0.3px;
+      line-height: 1.7;
+    }
+
+    .footer-col-label {
+      font-size: 0.6rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.2);
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+
+    .footer-link {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.4rem;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 0.7rem;
+      transition: color 0.25s;
+      line-height: 1.5;
+    }
+
+    .footer-link::before {
+      content: '→';
+      color: var(--gold);
+      opacity: 0;
+      transform: translateX(-4px);
+      transition: opacity 0.25s, transform 0.25s;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .footer-link:hover { color: rgba(255,255,255,0.75); }
+    .footer-link:hover::before { opacity: 1; transform: translateX(0); }
+
+    .footer-divider {
+      border-color: rgba(255,255,255,0.06);
+      margin: 2.5rem 0 1.5rem;
+    }
+
+    .footer-copy {
+      font-size: 0.68rem;
+      color: rgba(255,255,255,0.18);
+      letter-spacing: 0.5px;
+    }
+
+    /* ============================================================
+       REVEAL ANIMATION
+    ============================================================ */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.85s var(--ease-out-expo),
+                  transform 0.85s var(--ease-out-expo);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-30px);
+      transition: opacity 0.85s var(--ease-out-expo),
+                  transform 0.85s var(--ease-out-expo);
+    }
+
+    .reveal-left.visible { opacity: 1; transform: translateX(0); }
+
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(30px);
+      transition: opacity 0.85s var(--ease-out-expo),
+                  transform 0.85s var(--ease-out-expo);
+    }
+
+    .reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+    /* ============================================================
+       PROGRESS BAR
+    ============================================================ */
+    #read-progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      background: var(--gold);
+      z-index: 9999;
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+
+    /* ============================================================
+       PARALLAX LABEL (decorative rotated text)
+    ============================================================ */
+    .side-label {
+      position: absolute;
+      right: 2rem;
+      top: 50%;
+      transform: translateY(-50%) rotate(90deg);
+      transform-origin: center center;
+      font-size: 0.6rem;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: rgba(197,160,89,0.35);
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 991px) {
+      .collection-section { padding: 80px 0; }
+      #journey { padding: 80px 0; }
+      #about    { padding: 80px 0; }
+    }
+
+    @media (max-width: 767px) {
+      .slide-title { letter-spacing: -2px; }
+      .scroll-indicator { display: none; }
+      .slide-counter { display: none; }
+    }
+
+    /* ============================================================
+       ACTIVE NAV HIGHLIGHT (scroll spy)
+    ============================================================ */
+    .nav-link.active-section { color: var(--gold) !important; }
+    .nav-link.active-section::after { transform: scaleX(1); }
+  </style>
+</head>
+
+<body data-bs-spy="scroll" data-bs-target="#main-nav" data-bs-offset="80">
+
+  <!-- Page read progress -->
+  <div id="read-progress"></div>
+
+  <!-- Custom cursor -->
+  <div id="cursor"></div>
+  <div id="cursor-ring"></div>
+
+  <!-- ══════════════════════════════════════════════
+       NAVBAR
+  ══════════════════════════════════════════════ -->
+  <nav id="main-nav" class="navbar navbar-expand-lg navbar-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="#">VINYL <span>&</span> CO.</a>
+      <button class="navbar-toggler" type="button"
+              data-bs-toggle="collapse" data-bs-target="#navbarNav"
+              aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto gap-1 align-items-lg-center">
+          <li class="nav-item"><a class="nav-link" href="#jazz">60s Jazz</a></li>
+          <li class="nav-item"><a class="nav-link" href="#hip-hop">90s Hip Hop</a></li>
+          <li class="nav-item"><a class="nav-link" href="#classical">Classical</a></li>
+          <li class="nav-item"><a class="nav-link" href="#journey">Our Story</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ══════════════════════════════════════════════
+       HERO CAROUSEL
+  ══════════════════════════════════════════════ -->
+  <header id="home" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5500">
+    <div class="carousel-indicators">
+      <button type="button" data-bs-target="#home" data-bs-slide-to="0" class="active" aria-current="true"></button>
+      <button type="button" data-bs-target="#home" data-bs-slide-to="1"></button>
+      <button type="button" data-bs-target="#home" data-bs-slide-to="2"></button>
+    </div>
+
+    <!-- Slide counter -->
+    <div class="slide-counter">
+      <span class="current" id="counter-current">01</span>
+      <span>—</span>
+      <span>03</span>
+    </div>
+
+    <div class="carousel-inner">
+      <!-- Slide 1: Jazz -->
+      <div class="carousel-item active">
+        <div class="slide-bg" style="background-image:url('https://images.unsplash.com/photo-1511192336575-5a79af67a629?auto=format&fit=crop&q=80&w=1800');"></div>
+        <div class="slide-overlay"></div>
+        <div class="slide-grain"></div>
+        <div class="carousel-caption">
+          <div class="container">
+            <p class="slide-eyebrow">Collection No. 01</p>
+            <h1 class="slide-title">60s<br>Jazz</h1>
+            <p class="slide-sub">Smooth soul and blue notes on heavy wax.</p>
+            <p class="slide-zh">流暢通透的靈魂樂與藍調韻味精選</p>
+            <a href="#jazz" class="slide-cta">Explore Collection</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 2: Hip Hop -->
+      <div class="carousel-item">
+        <div class="slide-bg" style="background-image:url('https://images.unsplash.com/photo-1493225255756-d9584f8606e9?auto=format&fit=crop&q=80&w=1800');"></div>
+        <div class="slide-overlay"></div>
+        <div class="slide-grain"></div>
+        <div class="carousel-caption">
+          <div class="container">
+            <p class="slide-eyebrow">Collection No. 02</p>
+            <h1 class="slide-title">90s<br>Hip Hop</h1>
+            <p class="slide-sub">The golden era of boom-bap and rhythm.</p>
+            <p class="slide-zh">穿越純正嘻哈節奏的黃金年代</p>
+            <a href="#hip-hop" class="slide-cta">Explore Collection</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 3: Classical -->
+      <div class="carousel-item">
+        <div class="slide-bg" style="background-image:url('https://images.unsplash.com/photo-1507838596358-82725530d662?auto=format&fit=crop&q=80&w=1800');"></div>
+        <div class="slide-overlay"></div>
+        <div class="slide-grain"></div>
+        <div class="carousel-caption">
+          <div class="container">
+            <p class="slide-eyebrow">Collection No. 03</p>
+            <h1 class="slide-title">Classical</h1>
+            <p class="slide-sub">Masterpieces performed with timeless precision.</p>
+            <p class="slide-zh">歷久彌新的經典之作，大師演繹精選</p>
+            <a href="#classical" class="slide-cta">Explore Collection</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="scroll-indicator">
+      <span>Scroll</span>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════════════
+       JAZZ SECTION
+  ══════════════════════════════════════════════ -->
+  <section id="jazz" class="collection-section">
+    <div class="side-label" style="position:relative; display:none;"></div>
+    <div class="container">
+      <div class="row align-items-end mb-5 g-4">
+        <div class="col-md-7">
+          <div class="reveal">
+            <p class="section-eyebrow">Collection 01</p>
+            <h2 class="section-title">60s Jazz Collection</h2>
+            <div class="gold-rule"></div>
+          </div>
+        </div>
+        <div class="col-md-5 collection-intro reveal">
+          <p>Explore the sounds of Miles Davis, Coltrane, and the Blue Note era. Heavy-wax originals and audiophile pressings that defined modern jazz.</p>
+        </div>
+      </div>
+      <div class="row g-4">
+        <div class="col-sm-6 col-lg-4 reveal" style="transition-delay:0s;">
+          <div class="record-card">
+            <span class="record-badge">Original Press</span>
+            <div class="record-img-wrap">
+              <div class="record-disc-icon"></div>
+              <img src="https://picsum.photos/id/684/400/400" alt="Kind of Blue">
+            </div>
+            <div class="record-body">
+              <p class="record-meta">Blue Note · 1959</p>
+              <p class="record-title">Kind of Blue</p>
+              <p class="record-artist">Miles Davis</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-4 reveal" style="transition-delay:0.1s;">
+          <div class="record-card">
+            <span class="record-badge">Reissue</span>
+            <div class="record-img-wrap">
+              <div class="record-disc-icon"></div>
+              <img src="https://picsum.photos/id/640/400/400" alt="A Love Supreme">
+            </div>
+            <div class="record-body">
+              <p class="record-meta">Impulse! · 1964</p>
+              <p class="record-title">A Love Supreme</p>
+              <p class="record-artist">John Coltrane</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-4 reveal" style="transition-delay:0.2s;">
+          <div class="record-card">
+            <div class="record-img-wrap">
+              <div class="record-disc-icon"></div>
+              <img src="https://picsum.photos/id/284/400/400" alt="Getz Gilberto">
+            </div>
+            <div class="record-body">
+              <p class="record-meta">Verve · 1962</p>
+              <p class="record-title">Getz / Gilberto</p>
+              <p class="record-artist">Stan Getz</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       HIP HOP SECTION
+  ══════════════════════════════════════════════ -->
+  <section id="hip-hop" class="collection-section alt">
+    <div class="container">
+      <div class="row align-items-end mb-5 g-4">
+        <div class="col-md-7">
+          <div class="reveal">
+            <p class="section-eyebrow">Collection 02</p>
+            <h2 class="section-title">90s Hip Hop Selection</h2>
+            <div class="gold-rule"></div>
+          </div>
+        </div>
+        <div class="col-md-5 collection-intro reveal">
+          <p>From East Coast grit to West Coast G-Funk. The golden era of boom-bap on wax — unearthed and preserved.</p>
+        </div>
+      </div>
+      <div class="row g-4">
+        <div class="col-sm-6 col-lg-4 reveal" style="transition-delay:0s;">
+          <div class="record-card">
+            <span class="record-badge">Rare Find</span>
+            <div class="record-img-wrap">
+              <div class="record-disc-icon"></div>
+              <img src="https://picsum.photos/id/241/400/400" alt="Illmatic">
+            </div>
+            <div class="record-body">
+              <p class="record-meta">Columbia · 1994</p>
+              <p class="record-title">Illmatic</p>
+              <p class="record-artist">Nas</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-4 reveal" style="transition-delay:0.1s;">
+          <div class="record-card">
+            <div class="record-img-wrap">
+              <div class="record-disc-icon"></div>
+              <img src="https://picsum.photos/id/376/400/400" alt="The Chronic">
+            </div>
+            <div class="record-body">
+              <p class="record-meta">Death Row · 1992</p>
+              <p class="record-title">The Chronic</p>
+              <p class="record-artist">Dr. Dre</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-4 reveal" style="transition-delay:0.2s;">
+          <div class="record-card">
+            <span class="record-badge">Limited</span>
+            <div class="record-img-wrap">
+              <div class="record-disc-icon"></div>
+              <img src="https://picsum.photos/id/452/400/400" alt="Ready to Die">
+            </div>
+            <div class="record-body">
+              <p class="record-meta">Bad Boy · 1994</p>
+              <p class="record-title">Ready to Die</p>
+              <p class="record-artist">The Notorious B.I.G.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       CLASSICAL SECTION
+  ══════════════════════════════════════════════ -->
+  <section id="classical" class="collection-section dark">
+    <div class="container">
+      <div class="row align-items-end mb-5 g-4">
+        <div class="col-md-7">
+          <div class="reveal">
+            <p class="section-eyebrow">Collection 03</p>
+            <h2 class="section-title light">Essential Classicals</h2>
+            <div class="gold-rule"></div>
+          </div>
+        </div>
+        <div class="col-md-5 collection-intro light reveal">
+          <p>The world's greatest symphonies and concertos — pressed in the warmth of analog. Music that defies every era.</p>
+        </div>
+      </div>
+      <div class="row g-4">
+        <div class="col-sm-6 col-lg-4 reveal" style="transition-delay:0s;">
+          <div class="record-card">
+            <span class="record-badge">180g</span>
+            <div class="record-img-wrap">
+              <div class="record-disc-icon"></div>
+              <img src="https://picsum.photos/id/96/400/400" alt="Symphony No 9">
+            </div>
+            <div class="record-body">
+              <p class="record-meta">DG · 1963</p>
+              <p class="record-title">Symphony No. 9</p>
+              <p class="record-artist">Beethoven / Karajan</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-4 reveal" style="transition-delay:0.1s;">
+          <div class="record-card">
+            <div class="record-img-wrap">
+              <div class="record-disc-icon"></div>
+              <img src="https://picsum.photos/id/342/400/400" alt="Goldberg Variations">
+            </div>
+            <div class="record-body">
+              <p class="record-meta">Columbia · 1956</p>
+              <p class="record-title">Goldberg Variations</p>
+              <p class="record-artist">Glenn Gould</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-4 reveal" style="transition-delay:0.2s;">
+          <div class="record-card">
+            <span class="record-badge">Import</span>
+            <div class="record-img-wrap">
+              <div class="record-disc-icon"></div>
+              <img src="https://picsum.photos/id/437/400/400" alt="Four Seasons">
+            </div>
+            <div class="record-body">
+              <p class="record-meta">Philips · 1971</p>
+              <p class="record-title">The Four Seasons</p>
+              <p class="record-artist">Vivaldi / Marriner</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       JOURNEY TIMELINE
+  ══════════════════════════════════════════════ -->
+  <section id="journey">
+    <div class="container">
+      <div class="journey-header reveal">
+        <p class="section-eyebrow" style="text-align:center;">Since 2020</p>
+        <h2 class="section-title">Your Vinyl <em>Journey</em></h2>
+        <div class="gold-rule mx-auto"></div>
+      </div>
+
+      <div class="timeline-track">
+
+        <div class="tl-item reveal-left">
+          <div class="tl-text">
+            <div class="tl-num">01</div>
+            <p class="tl-label">Discover · 挖寶</p>
+            <h3 class="tl-heading">Find Your Sound</h3>
+            <p class="tl-body">Browse curated jazz, hip-hop, city pop, and rare Japanese pressings. Every visit uncovers something new — our selection rotates with estate finds and collector trades.</p>
+          </div>
+          <div class="tl-center"><div class="tl-dot"></div></div>
+          <div class="tl-visual">
+            <img src="https://images.unsplash.com/photo-1483412033650-1015ddeb83d1?auto=format&fit=crop&q=80&w=800" alt="Discover vinyl">
+          </div>
+        </div>
+
+        <div class="tl-item reveal-right">
+          <div class="tl-text">
+            <div class="tl-num">02</div>
+            <p class="tl-label">Listen · 試聽</p>
+            <h3 class="tl-heading">Feel the Analog Warmth</h3>
+            <p class="tl-body">Intimate listening sessions in our tatami-style lounge. Drop the needle, close your eyes, and let the warmth of 33 RPM wrap around you before you decide to take it home.</p>
+          </div>
+          <div class="tl-center"><div class="tl-dot"></div></div>
+          <div class="tl-visual">
+            <img src="https://images.unsplash.com/photo-1545167496-c1e092d383a2?auto=format&fit=crop&q=80&w=800" alt="Listen vinyl">
+          </div>
+        </div>
+
+        <div class="tl-item reveal-left">
+          <div class="tl-text">
+            <div class="tl-num">03</div>
+            <p class="tl-label">Collect · 納入收藏</p>
+            <h3 class="tl-heading">Build Your Collection</h3>
+            <p class="tl-body">Take home pristine pressings and limited editions. We grade, sleeve, and protect every record so that what you bring home is exactly what you heard — nothing less.</p>
+          </div>
+          <div class="tl-center"><div class="tl-dot"></div></div>
+          <div class="tl-visual">
+            <img src="https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?auto=format&fit=crop&q=80&w=800" alt="Collect vinyl">
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  
+  ══════════════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════════════ -->
+  <footer>
+    <div class="container">
+      <div class="row g-5">
+        <div class="col-md-5">
+          <div class="footer-brand">VINYL & CO.</div>
+          <p class="footer-tagline">Premium record boutique.<br>Curating soul, jazz, and hip-hop since 2020.<br></p>
+        </div>
+        <!-- <div class="col-6 col-md-3">
+          <p class="footer-col-label">Collections</p>
+          <a href="#jazz" class="footer-link">60s Jazz</a>
+          <a href="#hip-hop" class="footer-link">90s Hip Hop</a>
+          <a href="#classical" class="footer-link">Classical</a>
+          <a href="#journey" class="footer-link">Our Story</a>
+        </div> -->
+        <div class="col-6 col-md-4">
+          <p class="footer-col-label">Collections for sharing </p>
+          <a href="https://github.com/chuyun403/lohasTaichung" class="footer-link" target="_blank">戶外吹風聽音樂：台中市公園設施清單</a>
+          <a href="https://github.com/chuyun403/SalesIntelligence" class="footer-link"target="_blank">沉浸式教室：聽音樂陪伴商業案例學習</a>
+          <a href="https://github.com/chuyun403/bakeryCRUD" class="footer-link"target="_blank">沉浸式教室：聽音樂陪伴學習網頁開發</a>
+        </div>
+      </div>
+      <hr class="footer-divider">
+      <p class="footer-copy">© 2026 Vinyl & Co. · All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- ══════════════════════════════════════════════
+       SCRIPTS
+  ══════════════════════════════════════════════ -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    /* ──────────────────────────────────────
+       1. Custom Cursor
+    ────────────────────────────────────── */
+    (function() {
+      const cursor = document.getElementById('cursor');
+      const ring   = document.getElementById('cursor-ring');
+      if (!cursor || !ring) return;
+
+      let rx = 0, ry = 0;
+      let mx = 0, my = 0;
+
+      document.addEventListener('mousemove', (e) => {
+        mx = e.clientX;
+        my = e.clientY;
+        cursor.style.left = mx + 'px';
+        cursor.style.top  = my + 'px';
+      });
+
+      function animateRing() {
+        rx += (mx - rx) * 0.12;
+        ry += (my - ry) * 0.12;
+        ring.style.left = rx + 'px';
+        ring.style.top  = ry + 'px';
+        requestAnimationFrame(animateRing);
+      }
+      animateRing();
+
+      document.querySelectorAll('a, button, .record-card').forEach(el => {
+        el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+        el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+      });
+    })();
+
+    /* ──────────────────────────────────────
+       2. Navbar: scroll-aware state + active section
+    ────────────────────────────────────── */
+    (function() {
+      const nav      = document.getElementById('main-nav');
+      const navLinks = document.querySelectorAll('#main-nav .nav-link[href^="#"]');
+      const sections = Array.from(navLinks)
+        .map(l => document.querySelector(l.getAttribute('href')))
+        .filter(Boolean);
+
+      function onScroll() {
+        // Scrolled state
+        if (window.scrollY > 60) {
+          nav.classList.add('scrolled');
+        } else {
+          nav.classList.remove('scrolled');
+        }
+
+        // Active section highlight
+        let current = '';
+        sections.forEach(sec => {
+          if (window.scrollY >= sec.offsetTop - 120) {
+            current = '#' + sec.id;
+          }
+        });
+
+        navLinks.forEach(l => {
+          l.classList.toggle('active-section', l.getAttribute('href') === current);
+        });
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    })();
+
+    /* ──────────────────────────────────────
+       3. Read Progress Bar
+    ────────────────────────────────────── */
+    (function() {
+      const bar = document.getElementById('read-progress');
+      window.addEventListener('scroll', () => {
+        const scrolled = window.scrollY;
+        const total    = document.body.scrollHeight - window.innerHeight;
+        const pct      = total > 0 ? (scrolled / total) * 100 : 0;
+        bar.style.width = pct + '%';
+      }, { passive: true });
+    })();
+
+    /* ──────────────────────────────────────
+       4. Scroll Reveal (IntersectionObserver)
+    ────────────────────────────────────── */
+    (function() {
+      const opts = { threshold: 0.12, rootMargin: '0px 0px -50px 0px' };
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, opts);
+
+      document.querySelectorAll('.reveal, .reveal-left, .reveal-right')
+        .forEach(el => observer.observe(el));
+    })();
+
+
+    /* ──────────────────────────────────────
+       6. Carousel: slide counter + reset animations
+    ────────────────────────────────────── */
+    (function() {
+      const carouselEl = document.getElementById('home');
+      const counter    = document.getElementById('counter-current');
+      if (!carouselEl) return;
+
+      carouselEl.addEventListener('slide.bs.carousel', (e) => {
+        const idx = e.to + 1;
+        if (counter) counter.textContent = idx.toString().padStart(2, '0');
+      });
+
+      // On slide transition, briefly reset text so animation replays
+      carouselEl.addEventListener('slid.bs.carousel', () => {
+        const activeSlide = carouselEl.querySelector('.carousel-item.active');
+        const animEls = activeSlide.querySelectorAll(
+          '.slide-eyebrow, .slide-title, .slide-sub, .slide-zh, .slide-cta'
+        );
+        animEls.forEach(el => {
+          el.style.transition = 'none';
+          el.style.opacity    = '0';
+          el.style.transform  = 'translateY(22px)';
+        });
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            animEls.forEach(el => {
+              el.style.transition = '';
+              el.style.opacity    = '';
+              el.style.transform  = '';
+            });
+          });
+        });
+      });
+    })();
+
+    /* ──────────────────────────────────────
+       7. Smooth scroll for all anchor links
+    ────────────────────────────────────── */
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', (e) => {
+        const target = document.querySelector(anchor.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          const offset = 70;
+          const top    = target.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({ top, behavior: 'smooth' });
+          // Close mobile nav if open
+          const collapse = document.getElementById('navbarNav');
+          if (collapse && collapse.classList.contains('show')) {
+            collapse.classList.remove('show');
+          }
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
